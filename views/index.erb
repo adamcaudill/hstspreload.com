@@ -6,7 +6,7 @@
     html, body {
       font-family: sans-serif;
       background: #f0f0f0;
-      margin: 4em;
+      margin: 2em;
     }
     .main {
       background: white;
@@ -19,7 +19,36 @@
 <body>
 
 <section class="main">
+  <a href="https://github.com/adamcaudill/hstspreload.com">
+    <img style="position: absolute; top: 0; right: 0; border: 0;"
+         src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+         alt="Fork me on GitHub"
+         data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+  
   <h1>Welcome to HSTSPreload.com!</h1>
+  <p>This is an API that allows applications to easily check to see if a site is included on the Chrome, Firefox, and Tor <a href="https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security">HSTS</a> Preload lists.
+    To add your site to HSTS Preload lists, you can do so via the <a href="https://hstspreload.appspot.com/">Chrome HSTS Preload</a> site; most other browsers base their HSTS Preload list on the list maintained by Chrome.</p>
+  <p>The API is designed to be as easy to use as possible:</p>
+  <p><code>curl https://hstspreload.com/api/v1/status/<strong>google.com</strong></code></p>
+  <p><code>{"domain":"google.com","chrome":{"present":true,"include_subdomains":true,"last_updated":1474098192},"firefox":null,"tor":null}</code></p>
+
+  <h2>About the data...</h2>
+  <p>The HSTS preload lists are currently being pulled once a day (at night), from the following source files:</p>
+  <ul>
+    <li><a href="https://chromium.googlesource.com/chromium/src/net/+/master/http/transport_security_state_static.json">Chrome</a></li>
+    <li><a href="https://dxr.mozilla.org/mozilla-central/source/security/manager/ssl/nsSTSPreloadList.inc">Firefox</a></li>
+    <li><a href="https://gitweb.torproject.org/tor-browser.git/plain/security/manager/ssl/nsSTSPreloadList.inc?h=tor-browser-45.4.0esr-6.5-1">Tor</a></li>
+  </ul>
+
+  <h2>Terms of Use</h2>
+  <p>In short: be nice, don't abuse the service, but otherwise feel free to use it.
+    There is no change (and never will be), there are no API keys, and no quotas.
+    This is a free service to help the community.</p>
+
+  <h2>About this project...</h2>
+  <p>This is provided and maintained by <a href="https://adamcaudill.com/">Adam Caudill</a>;
+    if you have any questions, please feel free to <a href="https://adamcaudill.com/pgp/">contact</a> me.</p>
+  <p>Source code for this site is <a href="https://github.com/adamcaudill/hstspreload.com">available</a> on Github.</p>
 </section>
 
 </body>
