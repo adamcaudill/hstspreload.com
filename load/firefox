@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+
+require 'sqlite3'
+require 'nokogiri'
+require 'open-uri'
+
+begin
+  file_name = File.dirname(__FILE__) + '/../data/firefox.tmp'
+
+  puts 'Downloading the Firefox preload list...'
+  doc = Nokogiri::HTML(open("https://dxr.mozilla.org/mozilla-central/source/security/manager/ssl/nsSTSPreloadList.inc"))
+  links = doc.xpath('//a[@href]').map {|link| [link.text.strip, link["href"]]}.to_h
+
+  if links['Raw'] != nil
+    File.write(file_name, Net::HTTP.get(URI.parse(links['Raw'])))
+  else
+    raise 'Can not find Raw download link!'
+  end
+
+
+  puts 'Expiring all existing entries...'
+  db = SQLite3::Database.open File.dirname(__FILE__) + '/../data/preload_status.db'
+  db.execute "update firefox set status = 0, last_update = #{Time.now.to_i}"
+
+  puts 'Parsing file...'
+  raw = File.read(file_name)
+
+  matches = raw.scan(/\/\* ".*\*\//)
+
+  puts "Processing #{matches.count} rows..."
+  matches.each do |match|
+    str = match.to_s
+
+    domain = /\".*\"/.match(str).to_s
+    domain.delete! '"'
+
+    if str.include? 'true'
+      include_subdomains = 1
+    else
+      include_subdomains = 0
+    end
+
+    db.execute('insert or replace into firefox (domain, status, include_subdomains, last_update) values (:domain, :status, :include_subdomains, :last_update)',
+               'domain' => domain,
+               'status' => 1,
+               'include_subdomains' => include_subdomains,
+               'last_update' => Time.now.to_i)
+  end
+
+  puts 'Deleting expired records...'
+  db.execute 'delete from firefox where status = 0'
+
+  puts 'Done.'
+rescue => e
+  puts "ERROR: Failed to load new data into database: '#{e.message}'"
+ensure
+  db.close if db
+  File.delete file_name
+end

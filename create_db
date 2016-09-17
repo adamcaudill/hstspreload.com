@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require 'sqlite3'
+
+begin
+  db = SQLite3::Database.new File.dirname(__FILE__) + '/data/preload_status.db'
+  db.execute 'CREATE TABLE IF NOT EXISTS chrome(domain TEXT PRIMARY KEY, status INT, include_subdomains INT, last_update INT)'
+  db.execute 'CREATE TABLE IF NOT EXISTS firefox(domain TEXT PRIMARY KEY, status INT, include_subdomains INT, last_update INT)'
+  db.execute 'CREATE TABLE IF NOT EXISTS tor(domain TEXT PRIMARY KEY, status INT, include_subdomains INT, last_update INT)'
+rescue => e
+  puts "ERROR: Failed to create database: '#{e.message}'"
+ensure
+  db.close if db
+end

@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+require 'sqlite3'
+require 'net/http'
+
+begin
+  file_name = File.dirname(__FILE__) + '/../data/tor.tmp'
+
+  puts 'Downloading Tor Preload list...'
+  File.write(file_name, Net::HTTP.get(URI.parse('https://gitweb.torproject.org/tor-browser.git/plain/security/manager/ssl/nsSTSPreloadList.inc?h=tor-browser-45.4.0esr-6.5-1')))
+
+  puts 'Expiring all existing entries...'
+  db = SQLite3::Database.open File.dirname(__FILE__) + '/../data/preload_status.db'
+  db.execute "update tor set status = 0, last_update = #{Time.now.to_i}"
+
+  puts 'Parsing file...'
+  raw = File.read(file_name)
+
+  puts 'Parsing file...'
+  raw = File.read(file_name)
+
+  matches = raw.scan(/{.*}/)
+
+  puts "Processing #{matches.count} rows..."
+  matches.each do |match|
+    str = match.to_s
+
+    domain = /\".*\"/.match(str).to_s
+    domain.delete! '"'
+
+    if str.include? 'true'
+      include_subdomains = 1
+    else
+      include_subdomains = 0
+    end
+
+    db.execute('insert or replace into tor (domain, status, include_subdomains, last_update) values (:domain, :status, :include_subdomains, :last_update)',
+               'domain' => domain,
+               'status' => 1,
+               'include_subdomains' => include_subdomains,
+               'last_update' => Time.now.to_i)
+  end
+
+  puts 'Deleting expired records...'
+  db.execute 'delete from tor where status = 0'
+
+  puts 'Done.'
+rescue => e
+  puts "ERROR: Failed to load new data into database: '#{e.message}'"
+ensure
+  db.close if db
+  File.delete file_name
+end

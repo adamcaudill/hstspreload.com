@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require 'sqlite3'
+
+begin
+  db = SQLite3::Database.open File.dirname(__FILE__) + '/data/preload_status.db'
+
+  #adamcaudill.com
+  db.execute "INSERT INTO chrome VALUES('adamcaudill.com', 1, 0, #{Time.now.to_i})"
+  db.execute "INSERT INTO firefox VALUES('adamcaudill.com', 1, 1, #{Time.now.to_i})"
+
+  #google.com
+  db.execute "INSERT INTO chrome VALUES('google.com', 1, 0, #{Time.now.to_i})"
+  db.execute "INSERT INTO firefox VALUES('google.com', 1, 1, #{Time.now.to_i})"
+  db.execute "INSERT INTO tor VALUES('google.com', 1, 1, #{Time.now.to_i})"
+rescue => e
+  puts "ERROR: Failed to insert test data into database: '#{e.message}'"
+ensure
+  db.close if db
+end

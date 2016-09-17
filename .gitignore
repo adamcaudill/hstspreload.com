@@ -1,3 +1,10 @@
+#Ignore the data directory; contains SQLite DB
+/data/*.db
+/data/*.tmp
+
+#Ignore RubyMine files
+/.idea/
+
 *.gem
 *.rbc
 /.config
