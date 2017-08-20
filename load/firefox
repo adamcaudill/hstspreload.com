@@ -25,16 +25,15 @@ begin
   puts 'Parsing file...'
   raw = File.read(file_name)
 
-  matches = raw.scan(/\/\* ".*\*\//)
+  matches = raw.scan(/.*\..*, [0,1]/)
 
   puts "Processing #{matches.count} rows..."
   matches.each do |match|
     str = match.to_s
 
-    domain = /\".*\"/.match(str).to_s
-    domain.delete! '"'
+    domain = /^[^,]+/.match(str).to_s
 
-    if str.include? 'true'
+    if str.include? '1'
       include_subdomains = 1
     else
       include_subdomains = 0
