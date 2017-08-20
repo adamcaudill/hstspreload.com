@@ -16,10 +16,7 @@ begin
   puts 'Parsing file...'
   raw = File.read(file_name)
 
-  puts 'Parsing file...'
-  raw = File.read(file_name)
-
-  matches = raw.scan(/{.*}/)
+  matches = raw.scan(/\/\* ".*\*\//)
 
   puts "Processing #{matches.count} rows..."
   matches.each do |match|
