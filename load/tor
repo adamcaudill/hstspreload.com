@@ -7,7 +7,7 @@ begin
   file_name = File.dirname(__FILE__) + '/../data/tor.tmp'
 
   puts 'Downloading Tor Preload list...'
-  File.write(file_name, Net::HTTP.get(URI.parse('https://gitweb.torproject.org/tor-browser.git/plain/security/manager/ssl/nsSTSPreloadList.inc?h=tor-browser-45.4.0esr-6.5-1')))
+  File.write(file_name, Net::HTTP.get(URI.parse('https://gitweb.torproject.org/tor-browser.git/plain/security/manager/ssl/nsSTSPreloadList.inc?h=tor-browser-52.3.0esr-7.5-2')))
 
   puts 'Expiring all existing entries...'
   db = SQLite3::Database.open File.dirname(__FILE__) + '/../data/preload_status.db'
