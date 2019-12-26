@@ -8,11 +8,6 @@ class Lookup
       db = SQLite3::Database.open File.dirname(__FILE__) + '/data/preload_status.db'
       db.results_as_hash = true
 
-      #strip a leading "www." if present
-      if domain.start_with? 'www.'
-        domain.slice! 'www.'
-      end
-
       chrome = get_browser_status db, 'chrome', domain
       firefox = get_browser_status db, 'firefox', domain
       tor = get_browser_status db, 'tor', domain
