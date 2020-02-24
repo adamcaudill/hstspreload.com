@@ -3,7 +3,7 @@ GEM
   specs:
     json (2.0.2)
     mini_portile2 (2.4.0)
-    nokogiri (1.10.4)
+    nokogiri (1.10.8)
       mini_portile2 (~> 2.4.0)
     rack (1.6.12)
     rack-protection (1.5.5)
